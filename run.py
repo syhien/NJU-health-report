@@ -14,7 +14,8 @@ auth = NjuUiaAuth()
 
 def get_zjhs_time(method='YESTERDAY'):
     today = datetime.datetime.now(timezone('Asia/Shanghai'))
-    oldday = datetime.datetime.strptime("2022-04-09", "%Y-%m-%d")
+    oldday = datetime.datetime.strptime("2022-04-09", "%Y-%m-%d").astimezone(datetime.timezone.utc)
+    utctoday = today.astimezone(datetime.timezone.utc)
     yesterday = today + datetime.timedelta(days=-((today-oldday).days % 5))
     if method == 'YESTERDAY':
         return yesterday.strftime("%Y-%m-%d %-H")
