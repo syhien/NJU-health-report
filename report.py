@@ -12,7 +12,9 @@ URL_JDKD_INDEX = 'http://ehallapp.nju.edu.cn/xgfw/sys/mrjkdkappnju/index.html'
 
 def get_zjhs_time(method, last_id):
     """获取最近核酸时间"""
-    today = datetime.datetime.now(timezone('Asia/Shanghai'))
+    today = datetime.datetime.now(timezone('Asia/Shanghai')).astimezone(datetime.timezone.utc)
+    oldday = datetime.datetime.strptime("2022-05-10", "%Y-%m-%d").astimezone(datetime.timezone.utc)
+    yesterday = today + datetime.timedelta(days=-((today-oldday).days % 5))
     if method == 'YESTERDAY':
         PCR_date = today + datetime.timedelta(-1)
     elif method == 'REGULAR':
@@ -29,6 +31,10 @@ def apply(curr_location, logger, auth: NjuUiaAuth, covidTestMethod, last_id, for
     :param `covidTestMethod`: 最近核酸时间的方案
     :param `force`: 是否在今日已经打卡的前提下强制打卡
     """
+    URL_INDEX = "http://ehallapp.nju.edu.cn/xgfw/sys/mrjkdkappnju/index.html"
+    URL_UNREAD_LIST = 'http://ehallapp.nju.edu.cn/psfw/sys/tzggapp/mobile/getUnReadCount.do'
+    r1 = auth.session.get(URL_UNREAD_LIST)
+    r1 = auth.session.get(URL_INDEX)
     for _ in range(10):
         logger.info('尝试获取打卡列表信息...')
         r = auth.session.get(URL_JKDK_LIST)
