@@ -38,10 +38,8 @@ if __name__ == "__main__":
     curr_location = os.getenv('CURR_LOCATION')
     method = os.getenv('COVID_TEST_METHOD')
 
-    last_id = int(username[-1])
-
-    if method == None:
-        method = 'REGULAR'
+    if method == '':
+        method = 'YESTERDAY'
 
     if username == None or password == None or curr_location == None:
         log.error('账户、密码或地理位置信息为空！请检查是否正确地设置了 SECRET 项（GitHub Action）。')
@@ -53,6 +51,6 @@ if __name__ == "__main__":
         os._exit(-1)
 
     # start reporting
-    ok = apply(curr_location, log, auth, method, last_id)
+    ok = apply(curr_location, log, auth)
     if not ok:
         os._exit(-1)
